@@ -23,12 +23,14 @@ The Boolean model in Information Retrieval (IR) is a fundamental model used for 
 
 ### Program:
 
-    import numpy as np
-    import pandas as pd
-    class BooleanRetrieval:
-        def __init__(self):
-            self.index = {}
-            self.documents_matrix = None
+```python
+import numpy as np
+import pandas as pd
+
+class BooleanRetrieval:
+    def __init__(self):
+        self.index = {}
+        self.documents_matrix = None
 
     def index_document(self, doc_id, text):
         terms = text.lower().split()
@@ -62,7 +64,40 @@ The Boolean model in Information Retrieval (IR) is a fundamental model used for 
         print(list(self.index.keys()))
 
     def boolean_search(self, query):
-        # TYPE YOUR CODE HERE
+        tokens = query.lower().split()
+        result_set = set()
+
+        i = 0
+        while i < len(tokens):
+            token = tokens[i]
+
+            if token == "and":
+                i += 1
+                term_docs = self.index.get(tokens[i], set())
+                result_set = result_set.intersection(term_docs)
+
+            elif token == "or":
+                i += 1
+                term_docs = self.index.get(tokens[i], set())
+                result_set = result_set.union(term_docs)
+
+            elif token == "not":
+                i += 1
+                term_docs = self.index.get(tokens[i], set())
+                result_set = result_set.difference(term_docs)
+
+            else:
+                # first term or standalone
+                term_docs = self.index.get(token, set())
+               if not result_set:
+                    result_set = term_docs.copy()
+                else:
+                    # default operator AND
+                    result_set = result_set.intersection(term_docs)
+            i += 1
+
+        return list(result_set) if result_set else []
+
 
 if __name__ == "__main__":
     indexer = BooleanRetrieval()
@@ -80,14 +115,21 @@ if __name__ == "__main__":
     indexer.print_documents_matrix_table()
     indexer.print_all_terms()
 
-    query = input("Enter your boolean query: ")
-    results = indexer.boolean_search(query)
+    query1 = input("Enter your boolean query (use AND / OR / NOT): ")
+    results = indexer.boolean_search(query1)
     if results:
-        print(f"Results for '{query}': {results}")
+        print(f"Results for '{query1}': {results}")
     else:
         print("No results found for the query.")
+```
 
 
 ### Output:
+<img width="960" height="240" alt="Screenshot 2025-10-08 133746" src="https://github.com/user-attachments/assets/71a2982f-bf25-4450-af4c-00e0fc431cb2" />
+
+<img width="960" height="240" alt="Screenshot 2025-10-08 133910" src="https://github.com/user-attachments/assets/67db6841-379d-4306-bbc9-cc7f4adc3d41" />
+
+<img width="960" height="240" alt="image" src="https://github.com/user-attachments/assets/4625ce5b-3870-4cad-94e5-b54d795075e8" />
 
 ### Result:
+Thus, the python program to implement Information Retrieval Using Boolean Model is executed successfully.
